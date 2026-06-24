@@ -134,6 +134,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Build and publish kie-tools maven-base artifact
+        run: |
+          mvn --batch-mode clean deploy -s ${{ github.workspace }}/.github/configs/settings.xml -DskipTests
+          sed -i 's/mvn clean deploy/mvn clean install/g' package.json
+        working-directory: kie-tools/packages/maven-base
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Build and publish kie-tools artifacts
         run: mvn --batch-mode clean deploy -s ${{ github.workspace }}/.github/configs/settings.xml -DskipTests -Drevision=${{ inputs.LOGIC_VERSION }} -Dversion.org.kie.kogito=${{ inputs.LOGIC_VERSION }} -Dskip.maven.deploy.in.pnpm.wrapped.artifacts=false
         working-directory: kie-tools
